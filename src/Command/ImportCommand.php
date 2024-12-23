@@ -128,12 +128,13 @@ class ImportCommand extends Command
             $alreadyImportedIssues = [];
 
             $progressBar = new ProgressBar($output, $totalIssues);
-            ProgressBar::setFormatDefinition('custom', '[%bar%] %current%/%max% / %message%');
+            ProgressBar::setFormatDefinition('custom', '[%bar%] %current%/%max% %message%');
             $progressBar->setFormat('custom');
             $progressBar->setBarCharacter('<fg=green>█</>');
             $progressBar->setProgressCharacter("<fg=green>█</>");
             $progressBar->setEmptyBarCharacter("<fg=gray>▒</>");
 
+            $progressBar->setMessage('');
             $progressBar->start();
 
             foreach ($issues as $issue) {
