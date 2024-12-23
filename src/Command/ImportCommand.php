@@ -186,14 +186,54 @@ class ImportCommand extends Command
 
             $progressBar->finish();
 
-            $output->writeln('');
-
             if ($limit && $importOk >= $limit) {
                 $output->writeln("Limit of $limit imported issues reached");
             }
 
+            $output->writeln('');
+            $output->writeln('');
+
+            if ($erroredIssues) {
+                $table = new Table($output);
+                $table
+                    ->setHeaderTitle('Failed import issues')
+                    ->setHeaders(['GitLab issue id', 'title'])
+                    ->setRows(
+                        array_map(
+                            fn ($issue) => [
+                                "#{$issue->gitLabId}",
+                                $issue->title
+                            ],
+                            $erroredIssues
+                        )
+                    );
+                $table->render();
+            }
+
+            $output->writeln('');
+
+            if ($alreadyImportedIssues) {
+                $table = new Table($output);
+                $table
+                    ->setHeaderTitle('Already imported issues')
+                    ->setHeaders(['GitLab issue id', 'title'])
+                    ->setRows(
+                        array_map(
+                            fn ($issue) => [
+                                "#{$issue->gitLabId}",
+                                $issue->title
+                            ],
+                            $alreadyImportedIssues
+                        )
+                    );
+                $table->render();
+            }
+
+            $output->writeln('');
+
             $table = new Table($output);
             $table
+                ->setHeaderTitle($isDry ? 'Dry run result' : 'Importation result')
                 ->setRows([
                     ['Total issues', $totalIssues],
                     ['Imported issues', $importOk],
