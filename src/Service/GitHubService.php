@@ -43,12 +43,17 @@ class GitHubService
             $issues = $pager->fetchAll($this->client->api('issue'), 'all', ['username' => $this->userName, 'repository' => $this->repositoryName, 'params' => ['state' => 'all']]);
             if ($issues) {
                 foreach ($issues as $issue) {
-                    $this->currentIssueTitles[$issue['id']] = $issue['title'];
+                    $this->currentIssueTitles[$issue['number']] = $issue['title'];
                 }
             }
         } catch (Exception $e) {
             throw new Exception("Error retrieving issues from GitHub: {$e->getMessage()}");
         }
+    }
+
+    public function getCurrentIssueTitles(): array
+    {
+        return $this->currentIssueTitles;
     }
 
     public function isImported(Issue $issue): bool
