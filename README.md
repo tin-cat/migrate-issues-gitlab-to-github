@@ -5,20 +5,53 @@ A tool to migrate issues from a repository at GitLab to a repository at GitHub.
 - PHP 8
 
 ## Usage
-You can either setup the importation by creating an `.env.local` file (Copy the provided `.env.local.example` file as reference), or by providing all the needed setup via parameters.
+Clone the repository to a machine with PHP 8:
+```bash
+git clone https://github.com/tin-cat/migrate-issues-gitlab-to-github.git
+```
+
+You can either setup the importation by creating an `.env.local` file, by providing all the needed setup via parameters, or by calling the tool with no parameters to get asked interactively.
+
+**Setup with an .env.local file**
+
+Copy the provided `.env.local.example` file as reference and fill in your configuration parameters:
+
+```
+# GitLab configuration
+GITLAB_TOKEN=
+GITLAB_PROJECT_ID=
+
+# GitHub configuration
+GITHUB_TOKEN=
+GITHUB_USERNAME=
+GITHUB_REPOSITORY=
+```
 
 To run the importation
 ```bash
 php bin/console app:import
 ```
 
-Get the list of available parameters:
+**Specifying all configuration parameters in the command line instead**
+
+List of available parameters:
 
 ```bash
 php bin/console app:import --help
 ```
 
-Please note that some parameters are required if you haven't set them up in an `.env.local` file.
+Run the importation
+
+```bash
+php bin/console app:import \
+--gitLabToken=<Your GitLab token> \
+--gitLabProjectId=<Your source GitLab project id> \
+--gitHubToken=<Your GitHub token> \
+--gitHubUserName=<Your GitHub user name> \
+--gitHubRepository=<Your destination GitHub repository name>
+```
+
+Please note that all authentication and repository identification parameters are required if you haven't set them up in an `.env.local` file.
 
 ## Features
 - Tries to be gentle with APIs to avoid triggering rate limits.

@@ -43,7 +43,7 @@ class ImportCommand extends Command
                 'gitLabProjectId',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'The GitLab project Id'
+                'The GitLab source project Id'
             )
             ->addOption(
                 'gitHubToken',
@@ -61,7 +61,7 @@ class ImportCommand extends Command
                 'gitHubRepository',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'The GitHub repository name'
+                'The GitHub destination repository name'
             )
             ->addOption(
                 'gitHubImportDelayMs',
