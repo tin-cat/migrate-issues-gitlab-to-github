@@ -111,14 +111,14 @@ class ImportCommand extends Command
             $output->writeln("Retrieving issues from GitLab project #$gitLabProjectId");
 
             $this->gitLabService->init($gitLabToken);
-            $this->gitHubService->init($gitHubToken, $gitHubUserName, $gitHubRepository);
-
             $issues = $this->gitLabService->getIssues($gitLabProjectId);
 
             if (!$issues) {
                 $output->writeln("No issues found on GitLab project #$gitLabProjectId");
                 return Command::SUCCESS;
             }
+
+            $this->gitHubService->init($gitHubToken, $gitHubUserName, $gitHubRepository);
 
             $output->writeln(sizeof($issues)." issues found, importing".($limit ? " ($limit max)" : null));
 

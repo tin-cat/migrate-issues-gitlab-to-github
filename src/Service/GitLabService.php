@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 use Gitlab\Client;
 use App\Entity\Issue;
 use Gitlab\ResultPager;
@@ -16,22 +17,30 @@ class GitLabService
     )
     {
         $this->client = new Client();
-        $this->client->authenticate($token, Client::AUTH_HTTP_TOKEN);
+        try {
+            $this->client->authenticate($token, Client::AUTH_HTTP_TOKEN);
+        } catch (Exception $e) {;
+            throw new Exception("Error authenticating at GitLab: {$e->getMessage()}");
+        }
     }
 
     public function getIssues(
         int $projectId
     ): array
     {
-        $pager = new ResultPager($this->client);
-        $issues = $pager->fetchAll($this->client->issues(), 'all', [$projectId, ['state' => 'closed']]);
-        if (!$issues) return [];
-        return
-            array_map(
-                function ($data) {
-                    return Issue::buildFromGitLabApiResponse($data);
-                },
-                $issues
-            );
+        try {
+            $pager = new ResultPager($this->client);
+            $issues = $pager->fetchAll($this->client->issues(), 'all', [$projectId, ['state' => 'closed']]);
+            if (!$issues) return [];
+            return
+                array_map(
+                    function ($data) {
+                        return Issue::buildFromGitLabApiResponse($data);
+                    },
+                    $issues
+                );
+        } catch (Exception $e) {;
+            throw new Exception("Error retrieving GitLab issues: {$e->getMessage()}");
+        }
     }
 }

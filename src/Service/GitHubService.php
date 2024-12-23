@@ -2,10 +2,11 @@
 
 namespace App\Service;
 
+use Exception;
 use Github\Client;
 use App\Entity\Issue;
-use App\Entity\IssueState;
 use Github\AuthMethod;
+use App\Entity\IssueState;
 
 class GitHubService
 {
@@ -21,8 +22,13 @@ class GitHubService
         string $repositoryName
     )
     {
-        $this->client = new Client();
-        $this->client->authenticate($token, null, AuthMethod::ACCESS_TOKEN);
+        try {
+            $this->client = new Client();
+            $this->client->authenticate($token, null, AuthMethod::ACCESS_TOKEN);
+        } catch (Exception $e) {;
+            throw new Exception("Error authenticating at GitHub: {$e->getMessage()}");
+        }
+
         $this->userName = $userName;
         $this->repositoryName = $repositoryName;
 
@@ -31,12 +37,16 @@ class GitHubService
 
     private function loadCurrentIssueTitles()
     {
-        if ($issues = $this->client->api('issue')->all($this->userName, $this->repositoryName)) {
-            $this->currentIssueTitles =
-                array_map(
-                    fn ($issue) => $issue['title'],
-                    $issues
-                );
+        try {
+            if ($issues = $this->client->api('issue')->all($this->userName, $this->repositoryName, ['state' => 'all'])) {
+                $this->currentIssueTitles =
+                    array_map(
+                        fn ($issue) => $issue['title'],
+                        $issues
+                    );
+            }
+        } catch (Exception $e) {
+            throw new Exception("Error retrieving issues from GitHub: {$e->getMessage()}");
         }
     }
 
@@ -47,21 +57,25 @@ class GitHubService
 
     public function importIssue(Issue $issue)
     {
-        $result = $this->client->api('issue')->create(
-            $this->userName,
-            $this->repositoryName,
-            [
-                'title' => $issue->title,
-                'body' => $issue->description
-            ]
-        );
-        if ($issue->state == IssueState::Closed) {
-            $this->client->api('issue')->update(
+        try {
+            $result = $this->client->api('issue')->create(
                 $this->userName,
                 $this->repositoryName,
-                $result['number'],
-                ['state' => 'closed']
+                [
+                    'title' => $issue->title,
+                    'body' => $issue->description
+                ]
             );
+            if ($issue->state == IssueState::Closed) {
+                $this->client->api('issue')->update(
+                    $this->userName,
+                    $this->repositoryName,
+                    $result['number'],
+                    ['state' => 'closed']
+                );
+            }
+        } catch (Exception $e) {;
+            throw new Exception("Error adding issue to GitHub: {$e->getMessage()}");
         }
     }
 }
