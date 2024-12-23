@@ -4,7 +4,11 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+  gitLabToken: '%env(string:GITLAB_TOKEN)%'
+  gitLabProjectId: '%env(string:GITLAB_PROJECT_ID)%'
+  gitHubToken: '%env(string:GITHUB_TOKEN)%'
+  gitHubUserName: '%env(string:GITHUB_USERNAME)%'
+  gitHubRepository: '%env(string:GITHUB_REPOSITORY)%'
 services:
     # default configuration for services in *this* file
     _defaults:

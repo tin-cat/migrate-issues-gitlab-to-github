@@ -7,14 +7,16 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "guzzlehttp/guzzle": "^7.8",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "knplabs/github-api": "^3.0",
+        "m4tthumphrey/php-gitlab-api": "^11.14",
         "symfony/console": "7.2.*",
         "symfony/dotenv": "7.2.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.2.*",
         "symfony/runtime": "7.2.*",
         "symfony/yaml": "7.2.*"
-    },
-    "require-dev": {
     },
     "config": {
         "allow-plugins": {
