@@ -74,13 +74,13 @@ class ImportCommand extends Command
                 'limit',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'The maximum number of issues to import. Already existing issues are not counted.'
+                'The maximum number of issues to import. Already existing issues are not counted'
             )
             ->addOption(
                 'dry',
                 null,
                 InputOption::VALUE_NONE,
-                'Perform a dry run to see what issues would be imported but without making any actual change.'
+                'Perform a dry run to see what issues would be imported but without making any actual change'
             )
         ;
     }
@@ -115,6 +115,7 @@ class ImportCommand extends Command
         $isDry = intval($input->getOption('dry'));
 
         try {
+
             $output->writeln("Retrieving issues from GitLab project #$gitLabProjectId");
 
             $this->gitLabService->init($gitLabToken);
@@ -125,9 +126,9 @@ class ImportCommand extends Command
                 return Command::SUCCESS;
             }
 
-            $this->gitHubService->init($gitHubToken, $gitHubUserName, $gitHubRepository);
-
             $output->writeln(sizeof($issues)." issues found, importing".($limit ? " ($limit max)" : null));
+
+            $this->gitHubService->init($gitHubToken, $gitHubUserName, $gitHubRepository);
 
             $totalIssues = sizeof($issues);
             $importOk = 0;

@@ -32,18 +32,16 @@ class GitHubService
         $this->userName = $userName;
         $this->repositoryName = $repositoryName;
 
-        $this->loadCurrentIssueTitles();
+        $this->loadCurrentIssues();
     }
 
-    private function loadCurrentIssueTitles()
+    private function loadCurrentIssues()
     {
         try {
             if ($issues = $this->client->api('issue')->all($this->userName, $this->repositoryName, ['state' => 'all'])) {
-                $this->currentIssueTitles =
-                    array_map(
-                        fn ($issue) => $issue['title'],
-                        $issues
-                    );
+                foreach ($issues as $issue) {
+                    $this->currentIssueTitles[$issue['id']] = $issue['title'];
+                }
             }
         } catch (Exception $e) {
             throw new Exception("Error retrieving issues from GitHub: {$e->getMessage()}");
@@ -52,7 +50,7 @@ class GitHubService
 
     public function isImported(Issue $issue): bool
     {
-        return in_array($issue->title, $this->currentIssueTitles);
+        return in_array($issue->title, array_values($this->currentIssueTitles));
     }
 
     public function importIssue(Issue $issue)
