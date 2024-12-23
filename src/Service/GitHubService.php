@@ -6,6 +6,7 @@ use Exception;
 use Github\Client;
 use App\Entity\Issue;
 use Github\AuthMethod;
+use Github\ResultPager;
 use App\Entity\IssueState;
 
 class GitHubService
@@ -38,7 +39,9 @@ class GitHubService
     private function loadCurrentIssues()
     {
         try {
-            if ($issues = $this->client->api('issue')->all($this->userName, $this->repositoryName, ['state' => 'all'])) {
+            $pager = new ResultPager($this->client);
+            $issues = $pager->fetchAll($this->client->api('issue'), 'all', ['username' => $this->userName, 'repository' => $this->repositoryName, 'params' => ['state' => 'all']]);
+            if ($issues) {
                 foreach ($issues as $issue) {
                     $this->currentIssueTitles[$issue['id']] = $issue['title'];
                 }
