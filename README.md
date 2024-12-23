@@ -3,11 +3,17 @@ A tool to migrate issues from a repository at GitLab to a repository at GitHub.
 
 ## Requiremens
 - PHP 8
+- Composer
 
 ## Usage
 Clone the repository to a machine with PHP 8:
 ```bash
 git clone https://github.com/tin-cat/migrate-issues-gitlab-to-github.git
+```
+
+Install dependencies
+```bash
+composer install
 ```
 
 You can either setup the importation by creating an `.env.local` file, by providing all the needed setup via parameters, or by calling the tool with no parameters to get asked interactively.
