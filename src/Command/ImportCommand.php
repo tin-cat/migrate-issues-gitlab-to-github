@@ -76,6 +76,12 @@ class ImportCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'The maximum number of issues to import. Already existing issues are not counted.'
             )
+            ->addOption(
+                'dry',
+                null,
+                InputOption::VALUE_NONE,
+                'Perform a dry run to see what issues would be imported but without making any actual change.'
+            )
         ;
     }
 
@@ -106,6 +112,7 @@ class ImportCommand extends Command
         $gitHubRepository = $this->retrieveParameter($input, $output, 'gitHubRepository');
         $gitHubImportDelayMs = intval($this->retrieveParameter($input, $output, 'gitHubImportDelayMs'));
         $limit = intval($input->getOption('limit'));
+        $isDry = intval($input->getOption('dry'));
 
         try {
             $output->writeln("Retrieving issues from GitLab project #$gitLabProjectId");
@@ -149,9 +156,13 @@ class ImportCommand extends Command
                         $outputLine[] = "⏩ Already imported, skipping";
                         $alreadyImportedIssues[] = $issue;
                     } else {
-                        $this->gitHubService->importIssue($issue);
-                        $isShouldWait = true;
-                        $outputLine[] = "✅ Imported";
+                        if (!$isDry) {
+                            $this->gitHubService->importIssue($issue);
+                            $isShouldWait = true;
+                            $outputLine[] = "✅ Imported";
+                        } else {
+                            $outputLine[] = "✅ Would be imported if no dry run";
+                        }
                         $importOk ++;
                     }
 
