@@ -31,7 +31,7 @@ class Issue {
                 description: $data['description'],
                 state:
                     match($data['state']) {
-                        'open' => IssueState::Open,
+                        'opened' => IssueState::Open,
                         'closed' => IssueState::Closed
                     },
                 createdAt: strtotime($data['created_at'])

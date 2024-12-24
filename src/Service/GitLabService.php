@@ -30,7 +30,7 @@ class GitLabService
     {
         try {
             $pager = new ResultPager($this->client);
-            $issues = $pager->fetchAll($this->client->issues(), 'all', [$projectId, ['state' => 'closed']]);
+            $issues = $pager->fetchAll($this->client->issues(), 'all', [$projectId]);
             if (!$issues) return [];
             return
                 array_map(
