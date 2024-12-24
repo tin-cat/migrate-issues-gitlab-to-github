@@ -82,3 +82,11 @@ Please feel free to contribute your issues and merge requests.
 Thanks to:
 - [KNP Labs](https://github.com/KnpLabs) and their contributors for their PHP API client for GitHub [php-github-api](https://github.com/KnpLabs/php-github-api)
 - The creators and contributors of the [GitLab PHP API Client](https://github.com/GitLabPHP)
+
+## Other similar tools
+This tool is designed as a very simplistic migration with some limitations. It is also designed so it is easily modifiable to solve your own issue migration needs.
+
+There are other projects aimed also at migrating issues from GitLab to GitHub, and are arguably better built and more feature-rich than this solution:
+
+- [gitlab-github-migrate](https://github.com/wollzelle/gitlab-github-migrate)
+- [node-gitlab-2-github](https://github.com/piceaTech/node-gitlab-2-github)
