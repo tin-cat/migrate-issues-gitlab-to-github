@@ -1,7 +1,7 @@
 # migrate-issues-gitlab-to-github
 A tool to migrate issues from a repository at GitLab to a repository at GitHub.
 
-## Requiremens
+## Requirements
 - PHP 8
 - Composer
 
