@@ -8,6 +8,8 @@ use App\Entity\Issue;
 use Github\AuthMethod;
 use Github\ResultPager;
 use App\Entity\IssueState;
+use GuzzleHttp\Client as GuzzleClient;
+use Github\HttpClient\Builder;
 
 class GitHubService
 {
@@ -20,11 +22,12 @@ class GitHubService
     public function init(
         string $token,
         string $userName,
-        string $repositoryName
+        string $repositoryName,
+        bool $skipSslCertificateVerification = false
     )
     {
         try {
-            $this->client = new Client();
+            $this->client = new Client(new Builder(new GuzzleClient(['verify' => !$skipSslCertificateVerification])));
             $this->client->authenticate($token, null, AuthMethod::ACCESS_TOKEN);
         } catch (Exception $e) {;
             throw new Exception("Error authenticating at GitHub: {$e->getMessage()}");
