@@ -6,6 +6,8 @@ use Exception;
 use Gitlab\Client;
 use App\Entity\Issue;
 use Gitlab\ResultPager;
+use GuzzleHttp\Client as GuzzleClient;
+use Gitlab\HttpClient\Builder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class GitLabService
@@ -13,11 +15,12 @@ class GitLabService
     private Client $client;
 
     public function init(
-        string $token
+        string $token,
+        bool $skipSslCertificateVerification = false
     )
     {
-        $this->client = new Client();
         try {
+            $this->client = new Client(new Builder(new GuzzleClient(['verify' => !$skipSslCertificateVerification])));
             $this->client->authenticate($token, Client::AUTH_HTTP_TOKEN);
         } catch (Exception $e) {;
             throw new Exception("Error authenticating at GitLab: {$e->getMessage()}");

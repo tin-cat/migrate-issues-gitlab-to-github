@@ -82,6 +82,13 @@ class ImportCommand extends Command
                 InputOption::VALUE_NONE,
                 'Perform a dry run to see what issues would be imported but without making any actual change'
             )
+            ->addOption(
+                'skipSslCertificateVerification',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Skip SSL certificate verification',
+                false
+            )
         ;
     }
 
@@ -113,12 +120,13 @@ class ImportCommand extends Command
         $gitHubImportDelayMs = intval($this->retrieveParameter($input, $output, 'gitHubImportDelayMs'));
         $limit = intval($input->getOption('limit'));
         $isDry = intval($input->getOption('dry'));
+        $skipSslCertificateVerification = (bool) $input->getOption('skipSslCertificateVerification');
 
         try {
 
             $output->writeln("Retrieving issues from GitLab project #$gitLabProjectId");
 
-            $this->gitLabService->init($gitLabToken);
+            $this->gitLabService->init($gitLabToken, $skipSslCertificateVerification);
             $issues = $this->gitLabService->getIssues($gitLabProjectId);
 
             if (!$issues) {
@@ -128,7 +136,7 @@ class ImportCommand extends Command
 
             $output->writeln(sizeof($issues)." issues found, importing".($limit ? " ($limit max)" : null));
 
-            $this->gitHubService->init($gitHubToken, $gitHubUserName, $gitHubRepository);
+            $this->gitHubService->init($gitHubToken, $gitHubUserName, $gitHubRepository, $skipSslCertificateVerification);
 
             $totalIssues = sizeof($issues);
             $importOk = 0;
