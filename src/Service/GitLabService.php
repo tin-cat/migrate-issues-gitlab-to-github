@@ -36,11 +36,13 @@ class GitLabService
             $issues = $pager->fetchAll($this->client->issues(), 'all', [$projectId]);
             if (!$issues) return [];
             return
-                array_map(
-                    function ($data) {
-                        return Issue::buildFromGitLabApiResponse($data);
-                    },
-                    $issues
+                array_reverse(
+                    array_map(
+                        function ($data) {
+                            return Issue::buildFromGitLabApiResponse($data);
+                        },
+                        $issues
+                    )
                 );
         } catch (Exception $e) {;
             throw new Exception("Error retrieving GitLab issues: {$e->getMessage()}");
